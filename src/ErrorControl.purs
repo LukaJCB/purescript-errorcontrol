@@ -16,9 +16,10 @@ import Data.Newtype (unwrap)
 -- | Find more here: https://lukajcb.github.io/blog/functional/2018/04/15/rethinking-monaderror.html
 -- |
 -- | Should respect the following laws:
--- | Catch: `controlError (throwError e) f === f e`
--- | Pure: `controlError (pure a) f === pure a`
--- | No Errors in g: `handleBlunder (accept ga) f === ga`
+-- |
+-- | - Catch: `controlError (throwError e) f === f e`
+-- | - Pure: `controlError (pure a) f === pure a`
+-- | - No Errors in g: `handleBlunder (accept ga) f === ga`
 class (MonadThrow e f, Monad g) <= ErrorControl f g e | f -> e, f -> g where
   controlError :: forall a. f a -> (e -> g a) -> g a
   accept :: g ~> f
