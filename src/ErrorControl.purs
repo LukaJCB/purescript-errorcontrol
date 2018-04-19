@@ -10,6 +10,15 @@ import Data.Either (Either(..), either)
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 
+-- | A type class for principled Error handling.
+-- | ErrorControl allows to represent already handled errors in the type system
+-- | by switching to an unexceptional type constructor `g`.
+-- | Find more here: https://lukajcb.github.io/blog/functional/2018/04/15/rethinking-monaderror.html
+-- |
+-- | Should respect the following laws:
+-- | Catch: `controlError (throwError e) f === f e`
+-- | Pure: `controlError (pure a) f === pure a`
+-- | No Errors in g: `handleBlunder (accept ga) f === ga`
 class (MonadThrow e f, Monad g) <= ErrorControl f g e | f -> e, f -> g where
   controlError :: forall a. f a -> (e -> g a) -> g a
   accept :: g ~> f
