@@ -17,6 +17,6 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/purescript/purescript-prelude.git"
+    "url": "git://github.com/LukaJCB/purescript-errorcontrol/.git"
   }
 }
