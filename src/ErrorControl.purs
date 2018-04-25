@@ -8,6 +8,7 @@ import Control.Monad.Except.Trans (lift)
 import Control.Monad.State (StateT(..), mapStateT, runStateT)
 import Data.Either (Either(..), either)
 import Data.Identity (Identity(..))
+import Data.Maybe (Maybe, maybe)
 import Data.Newtype (unwrap)
 
 -- | A type class for principled Error handling.
@@ -37,11 +38,8 @@ absolve :: forall f g e a. ErrorControl f g e => Monad f => g (Either e a) -> f 
 absolve gea = accept gea >>= (either throwError pure)
 
 
-assure :: forall f g e a. ErrorControl f g e => Monad f => g a -> (a -> e) -> (a -> Boolean) -> f a
-assure ga error predicate =
-  accept ga >>= (\a -> 
-    if predicate a then pure a else throwError (error a))
-
+assure :: forall f g e a. ErrorControl f g e => Monad f => g a -> (a -> Maybe e) -> f a
+assure ga predicate = accept ga >>= \a -> maybe (pure a) throwError $ predicate a
 
 instance errorControlEither :: ErrorControl (Either e) Identity e where
   controlError fa f = case fa of
